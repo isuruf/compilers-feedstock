@@ -35,15 +35,10 @@ outputs:
   - name: c-compiler
     requirements:
       run:
-        - {{ compiler('c') }}
-        - binutils             # [linux]
-        - gcc                  # [linux]
-        - cctools >=949.0.1    # [osx]
-        - ld64 >=530           # [osx]
-        - llvm-openmp          # [osx]
+        - {{ compiler('c') }}  # [win]
+        - {{ c_compiler }}  {{ c_compiler_version }}.*  # [unix]
     test:
       commands:
-        - $CC --help  # [unix]
 {%- for command in commands['c-compiler'] %}  # [unix]
         - {{ command }} --help > /dev/null  # [unix]
 {%- endfor %}  # [unix]
@@ -64,12 +59,10 @@ outputs:
   - name: cxx-compiler
     requirements:
       run:
-        - {{ compiler('cxx') }}
-        - {{ pin_subpackage('c-compiler', exact=True) }}  # [unix]
-        - gxx                  # [linux]
+        - {{ compiler('cxx') }}  # [win]
+        - {{ cxx_compiler }}  {{ cxx_compiler_version }}.*  # [unix]
     test:
       commands:
-        - $CXX --help  # [unix]
 {%- for command in commands['cxx-compiler'] %}  # [unix]
         - {{ command }} --help > /dev/null  # [unix]
 {%- endfor %}  # [unix]
@@ -90,16 +83,10 @@ outputs:
   - name: fortran-compiler
     requirements:
       run:
-        - {{ compiler('fortran') }}
-        - binutils             # [linux]
-        - cctools >=949.0.1    # [osx]
-        - ld64 >=530           # [osx]
-        - llvm-openmp          # [osx]
-        - gfortran             # [linux or osx]
-        - {{ pin_subpackage('c-compiler', exact=True) }}  # [linux]
+        - {{ compiler('fortran') }}  # [win]
+        - {{ fortran_compiler }}  {{ fortran_compiler_version }}.*  # [unix]
     test:
       commands:
-        - $FC --help  # [unix]
 {%- for command in commands['fortran-compiler'] %}  # [unix]
         - {{ command }} --help > /dev/null  # [unix]
 {%- endfor %}  # [unix]
@@ -125,9 +112,7 @@ outputs:
         - {{ pin_subpackage('fortran-compiler', exact=True) }}
     test:
       commands:
-        - $CC --help  # [unix]
-        - $CXX --help  # [unix]
-        - $FC --help  # [unix]
+        - echo hello
 
 about:
   home: https://conda-forge.org
